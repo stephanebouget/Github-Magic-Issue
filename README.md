@@ -1,6 +1,7 @@
 # ✨ GitHub Magic Issue
 
-Auto-translate issue descriptions and generate English titles for GitHub issues using AI.
+Because automatic issue modifications via GitHub Actions lack fine-grained control.
+This extension brings AI directly into the GitHub interface, allowing you to generate clear, concise issue titles in real time based on your description.
 
 ## Features
 
