@@ -1,7 +1,7 @@
-# ✨ GitHub Magic Issue
+# ✨ GitHub / Gitlab Magic Issue
 
 Because automatic issue modifications via GitHub Actions lack fine-grained control.
-This extension brings AI directly into the GitHub interface, allowing you to generate clear, concise issue titles in real time based on your description.
+This extension brings AI directly into the GitHub interface, allowing you to generate concise issue titles in real time based on your description.
 
 ## Features
 

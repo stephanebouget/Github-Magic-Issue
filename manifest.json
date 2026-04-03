@@ -1,20 +1,21 @@
 {
   "manifest_version": 3,
   "name": "GitHub Magic Issue",
+  "description": "Brings AI directly into the GitHub/Gitlab interface, allowing you to generate clear, concise issue titles based on your description",
   "version": "1.0",
   "permissions": ["activeTab", "scripting"],
   "host_permissions": [
     "https://github.com/*",
-    "https://github.com/*/issues*",
     "https://llmproxy.ai.orange/*",
-    "https://translate.googleapis.com/*"
+    "https://translate.googleapis.com/*",
+    "https://gitlab.tech.orange/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": ["https://github.com/*"],
+      "matches": ["https://github.com/*", "https://gitlab.tech.orange/*"],
       "js": ["content.js"],
       "run_at": "document_idle"
     }

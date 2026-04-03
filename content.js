@@ -187,14 +187,110 @@ function injectEditButton() {
   const btn = createMagicBtn(() =>
     generateFromContent(btn, titleInput, null, true),
   );
-  // Insert into cancelBtn's direct parent, not container
   cancelBtn.parentElement.insertBefore(btn, cancelBtn);
+}
+
+// Inject button on GitLab new issue form
+function injectGitlabNewIssueButton() {
+  const titleInput = document.querySelector(
+    'input[data-testid="work-item-title-input"]',
+  );
+  const descInput = document.querySelector(
+    'textarea[data-testid="markdown-editor-form-field"][aria-label="Description"]',
+  );
+
+  if (!titleInput || !descInput) return;
+
+  const titleWrapper = titleInput.parentElement;
+  if (!titleWrapper) return;
+
+  // Avoid duplicate - check the title group parent
+  const titleGroup = titleInput.closest('[data-testid="title-input"]');
+  if (!titleGroup || titleGroup.querySelector(".magic-btn")) return;
+
+  // Wrap input + button in a flex row
+  titleWrapper.style.display = "flex";
+  titleWrapper.style.flexDirection = "row";
+  titleWrapper.style.alignItems = "center";
+  titleWrapper.style.gap = "8px";
+
+  titleInput.style.setProperty("flex", "1 1 auto", "important");
+  titleInput.style.setProperty("minWidth", "0", "important");
+
+  const btn = createMagicBtn(() =>
+    generateFromContent(btn, titleInput, descInput),
+  );
+  titleWrapper.appendChild(btn);
+}
+
+// Inject button on GitLab edit issue (description form Cancel button)
+function injectGitlabEditButton() {
+  const titleInput = document.querySelector(
+    'input[data-testid="work-item-title-input"]',
+  );
+  if (!titleInput) return;
+
+  const titleWrapper = titleInput.parentElement;
+  if (!titleWrapper || titleWrapper.querySelector(".magic-btn")) return;
+
+  const descTextarea = document.querySelector("#work-item-description");
+
+  const btn = createMagicBtn(() => {
+    const content = descTextarea?.value || titleInput.value;
+    if (!content.trim()) {
+      showNotification("No content to translate", true);
+      return;
+    }
+    generateFromContentRaw(btn, titleInput, content);
+  });
+
+  // Style wrapper as flex row so input and button sit side by side
+  titleWrapper.style.display = "flex";
+  titleWrapper.style.flexDirection = "row";
+  titleWrapper.style.alignItems = "center";
+  titleWrapper.style.gap = "8px";
+
+  titleInput.style.setProperty("flex", "1 1 auto", "important");
+  titleInput.style.setProperty("minWidth", "0", "important");
+
+  // Insert right after the input
+  titleInput.insertAdjacentElement("afterend", btn);
+}
+
+// Helper: generate title from raw content string (no descInput update)
+async function generateFromContentRaw(btn, titleInput, content) {
+  btn.innerHTML = '<span class="magic-spinner"></span>';
+  btn.disabled = true;
+
+  try {
+    const res = await chrome.runtime.sendMessage({
+      type: "TRANSLATE_AND_GENERATE_TITLE",
+      content,
+    });
+
+    if (res?.error) {
+      showNotification(`Error: ${res.error}`, true);
+    } else if (res?.title) {
+      titleInput.value = res.title;
+      titleInput.dispatchEvent(new Event("input", { bubbles: true }));
+      showNotification("✅ Title generated!");
+    } else {
+      showNotification("No title received", true);
+    }
+  } catch (err) {
+    showNotification(`Error: ${err.message}`, true);
+  }
+
+  btn.innerText = "✨";
+  btn.disabled = false;
 }
 
 // Watch for DOM changes (handles both new issue form and edit mode)
 const observer = new MutationObserver(() => {
   injectButton();
   injectEditButton();
+  injectGitlabNewIssueButton();
+  injectGitlabEditButton();
 });
 
 observer.observe(document.body, {
@@ -207,7 +303,11 @@ document.addEventListener("turbo:load", () => {
   document.querySelectorAll(".magic-btn").forEach((el) => el.remove());
   injectButton();
   injectEditButton();
+  injectGitlabNewIssueButton();
+  injectGitlabEditButton();
 });
 
 // Initial injection
 injectButton();
+injectGitlabNewIssueButton();
+injectGitlabEditButton();
