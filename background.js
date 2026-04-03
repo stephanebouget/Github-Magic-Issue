@@ -1,3 +1,6 @@
+// Load configuration from config.js
+importScripts("config.js");
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === "GENERATE_TITLE") {
     generateTitle(msg.content)
