@@ -34,8 +34,12 @@ const CONFIG = {
 
 1. Go to `chrome://extensions/`
 2. Enable **Developer mode** (top right)
+<img width="172" height="45" alt="image" src="https://github.com/user-attachments/assets/b6e2be76-d22b-45bd-8059-4744090e9105" />
+
 3. Click **Load unpacked**
-4. Select this folder
+5. Select this folder
+<img width="417" height="225" alt="image" src="https://github.com/user-attachments/assets/d1c3d303-91b1-4166-931c-58b28adf5090" />
+
 
 ### 3. Update Manifest
 
@@ -49,6 +53,8 @@ Edit `manifest.json` and update the content script matches pattern:
 
 - **New Issues**: Click the ✨ magic button next to the title input
 - **Edit Issues**: Click the ✨ magic button next to Cancel button
+  <img width="736" height="361" alt="image" src="https://github.com/user-attachments/assets/bbab95cd-9c2e-42aa-b7ab-b43132489413" />
+
 
 The button will:
 
