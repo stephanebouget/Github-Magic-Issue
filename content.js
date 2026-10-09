@@ -134,11 +134,14 @@ function injectButton() {
     'textarea[aria-label="Markdown value"]',
   );
 
-  if (!titleInput || !descInput) return;
+  if (!titleInput) return;
 
-  const wrapper = titleInput.closest(
-    ".CreateIssueFormTitle-module__subcontainer__JTymL",
-  );
+  const dynamicContainer = titleInput.closest('[class*="InlineAutocomplete"]');
+  const wrapper =
+    dynamicContainer?.parentElement ||
+    titleInput.closest('[data-component="FormControl"]') ||
+    titleInput.parentElement;
+
   if (!wrapper) return;
 
   if (wrapper.querySelector(".magic-btn")) return;
@@ -151,7 +154,6 @@ function injectButton() {
   wrapper.style.minWidth = "0";
 
   // Force dynamic container to take full space
-  const dynamicContainer = titleInput.closest('[class*="InlineAutocomplete"]');
   if (dynamicContainer) {
     dynamicContainer.style.setProperty("flex", "1 1 auto", "important");
     dynamicContainer.style.setProperty("width", "auto", "important");
